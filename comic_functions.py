@@ -22,7 +22,7 @@ def load_image(image_info):
         file.write(response.content)
 
 
-def get_url_of_random_comic():
+def get_comic_url():
     url_of_current_comic = 'http://xkcd.com/info.0.json'
     image_info = get_image_info(url_of_current_comic)
     num = image_info['num']
