@@ -9,8 +9,11 @@ def get_upload_url(access_token, group_id):
         'v': '5.126'
     }
     response = requests.get(url, params=params)
-    response.raise_for_status()
-    return response.json()['response']['upload_url']
+    json_content = response.json()
+    if list(json_content.keys())[0] == 'error':
+        return None
+    else:
+        return json_content['response']['upload_url']
 
 
 def upload_photo_to_server(image_name, upload_url):
