@@ -9,7 +9,7 @@ def main():
     access_token = os.getenv('VK_ACCESS_TOKEN')
     group_id = os.getenv('VK_GROUP_ID')
 
-    comic_url = comic_functions.get_comic_url()
+    comic_url = comic_functions.get_random_comic_url()
     image_info = comic_functions.get_image_info(comic_url)
     comic_functions.load_image(image_info)
 
