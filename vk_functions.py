@@ -1,6 +1,10 @@
 import requests
 
 
+def catch_vk_error(response_json_content):
+    return 'error' in response_json_content
+
+
 def get_upload_url(access_token, group_id):
     url = 'https://api.vk.com/method/photos.getWallUploadServer'
     params = {
@@ -10,7 +14,7 @@ def get_upload_url(access_token, group_id):
     }
     response = requests.get(url, params=params)
     json_content = response.json()
-    if list(json_content.keys())[0] == 'error':
+    if catch_vk_error(json_content):
         return None
     else:
         return json_content['response']['upload_url']
@@ -22,8 +26,11 @@ def upload_photo_to_server(image_name, upload_url):
             'photo': file
         }
         response = requests.post(upload_url, files=files)
-        response.raise_for_status()
-    return response.json()
+    json_content = response.json()
+    if catch_vk_error(json_content):
+        return None
+    else:
+        return json_content
 
 
 def save_wall_photo(access_token, group_id,
@@ -38,8 +45,11 @@ def save_wall_photo(access_token, group_id,
         'v': '5.126'
     }
     response = requests.post(url, params)
-    response.raise_for_status()
-    return response.json()
+    json_content = response.json()
+    if catch_vk_error(json_content):
+        return None
+    else:
+        return json_content
 
 
 def post_to_wall(access_token, group_id, save_wall_photo_result, message):
@@ -55,5 +65,9 @@ def post_to_wall(access_token, group_id, save_wall_photo_result, message):
         'v': '5.126'
     }
     response = requests.post(url, params)
-    response.raise_for_status()
-    return response.json()
+    json_content = response.json()
+    if catch_vk_error(json_content):
+        return None
+    else:
+        return json_content
+
