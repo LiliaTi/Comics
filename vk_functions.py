@@ -1,8 +1,9 @@
 import requests
 
 
-def catch_vk_error(response_json_content):
-    return 'error' in response_json_content
+def raise_for_vk_error(response):
+    if 'error' in response:
+        raise requests.exceptions.HTTPError
 
 
 def get_upload_url(access_token, group_id):
@@ -12,12 +13,9 @@ def get_upload_url(access_token, group_id):
         'access_token': access_token,
         'v': '5.126'
     }
-    response = requests.get(url, params=params)
-    json_content = response.json()
-    if catch_vk_error(json_content):
-        return None
-    else:
-        return json_content['response']['upload_url']
+    response = requests.get(url, params=params).json()
+    raise_for_vk_error(response)
+    return response['response']['upload_url']
 
 
 def upload_photo_to_server(image_name, upload_url):
@@ -25,12 +23,9 @@ def upload_photo_to_server(image_name, upload_url):
         files = {
             'photo': file
         }
-        response = requests.post(upload_url, files=files)
-    json_content = response.json()
-    if catch_vk_error(json_content):
-        return None
-    else:
-        return json_content
+        response = requests.post(upload_url, files=files).json()
+    raise_for_vk_error(response)
+    return response
 
 
 def save_wall_photo(access_token, group_id,
@@ -44,12 +39,9 @@ def save_wall_photo(access_token, group_id,
         'access_token': access_token,
         'v': '5.126'
     }
-    response = requests.post(url, params)
-    json_content = response.json()
-    if catch_vk_error(json_content):
-        return None
-    else:
-        return json_content
+    response = requests.post(url, params).json()
+    raise_for_vk_error(response)
+    return response
 
 
 def post_to_wall(access_token, group_id, save_wall_photo_result, message):
@@ -64,10 +56,6 @@ def post_to_wall(access_token, group_id, save_wall_photo_result, message):
         'access_token': access_token,
         'v': '5.126'
     }
-    response = requests.post(url, params)
-    json_content = response.json()
-    if catch_vk_error(json_content):
-        return None
-    else:
-        return json_content
-
+    response = requests.post(url, params).json()
+    raise_for_vk_error(response)
+    return response
